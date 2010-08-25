@@ -1,15 +1,15 @@
 # A parser for SGML, using the derived class as static DTD.
 
-class SgmlParser
+class SGMLParser
 
   # Regular expressions used for parsing:
-  Interesting = /[&<]/
+  Interesting = /(<|&#?[a-zA-Z0-9]+;)/
   Incomplete = Regexp.compile('&([a-zA-Z][a-zA-Z0-9]*|#[0-9]*)?|' +
                               '<([a-zA-Z][^<>]*|/([a-zA-Z][^<>]*)?|' +
                               '![^<>]*)?')
 
-  Entityref = /&([a-zA-Z][-.a-zA-Z0-9]*)[^-.a-zA-Z0-9]/
-  Charref = /&#([0-9]+)[^0-9]/
+  Entityref = /(\s?)&([a-zA-Z]+);(\s?)/
+  Charref = /(\s?)&#([0-9]+);(\s?)/
 
   Starttagopen = /<[>a-zA-Z]/
   Endtagopen = /<\/[<>a-zA-Z]/
@@ -123,13 +123,17 @@ class SgmlParser
       elsif rawdata[i] == ?& #
         if rawdata.index(Charref, i) == i
           i += $&.length
-          handle_charref($1)
+          handle_whitespace($1) if $1.length > 0
+          handle_charref($2)
+          handle_whitespace($3) if $3.length > 0
           i -= 1 unless rawdata[i-1] == ?;
           next
         end
         if rawdata.index(Entityref, i) == i
           i += $&.length
-          handle_entityref($1)
+          handle_whitespace($1) if $1.length > 0
+          handle_entityref($2)
+          handle_whitespace($3) if $3.length > 0
           i -= 1 unless rawdata[i-1] == ?;
           next
         end
@@ -309,6 +313,9 @@ class SgmlParser
       unknown_entityref(name)
       return
     end
+  end
+  
+  def handle_whitespace(data)
   end
 
   def handle_data(data)
