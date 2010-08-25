@@ -72,7 +72,7 @@ describe HTMLToTextileParser, "when converting html to textile" do
       
       Hughes & Hughes
       
-      Something &amp; something else
+      Something &amp; something else and <span rel="test">a useless span</span>
       
       Some text before a table<table summary="a table without a caption">
         <tr>
@@ -127,6 +127,10 @@ describe HTMLToTextileParser, "when converting html to textile" do
   
   it "should treat divs as block level elements, but ignore any attributes (effectively converting them to paragraphs)" do
     @textile.should include("\n\nA note\n\nFollowed by another note\n\n")
+  end
+  
+  it "should not convert pointless spans to textile (i.e. without supported attributes)" do
+    @textile.should_not include("%a useless span%")
   end
 
   it "should convert class and id attributes" do

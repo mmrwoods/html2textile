@@ -328,14 +328,17 @@ class HTMLToTextileParser < SGMLParser
   def make_quicktag_start_pair(tag, wrapchar, attributes)
     attributes = attrs_to_hash(attributes)
     class_style = build_styles_ids_and_classes(attributes)
-    write([" "]) unless in_nested_quicktag?
-    write(["#{wrapchar}#{class_style}"])
+    @skip_quicktag = ( tag == 'span' && class_style.length == 0 )
+    unless @skip_quicktag
+      write([" "]) unless in_nested_quicktag?
+      write(["#{wrapchar}#{class_style}"])
+    end
     start_capture(tag)
   end
 
   def make_quicktag_end_pair(wrapchar)
     stop_capture_and_write
-    write([wrapchar])
+    write([wrapchar]) unless @skip_quicktag
     write([" "]) unless in_nested_quicktag?
   end
   
