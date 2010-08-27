@@ -13,5 +13,5 @@ Gem::Specification.new do |s|
   s.homepage          = 'http://jystewart.net/process/2007/11/converting-html-to-textile-with-ruby'
 
   s.require_path = 'lib'
-  s.files        = Dir.glob("{lib}/**/*") + %w(example.rb README.mdown)
+  s.files        = Dir.glob("{lib,spec}/**/*") + %w(example.rb README.mdown)
 end
