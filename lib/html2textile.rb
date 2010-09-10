@@ -329,8 +329,13 @@ class HTMLToTextileParser < SGMLParser
     attributes = attrs_to_hash(attributes)
     class_style = build_styles_ids_and_classes(attributes)
     @skip_quicktag = ( tag == 'span' && class_style.length == 0 )
+    # use square brackets for superscript and subscript to avoid whitespace issues
+    # this may be RedCloth specific, but as it's the de facto standard textile library for Ruby, should be ok
+    @use_square_brackets = ( !@stack.empty? && %w{ sub sup }.include?(@stack[@stack.size-1]) )
     unless @skip_quicktag
-      write([" "]) unless in_nested_quicktag?
+      unless in_nested_quicktag?
+        @use_square_brackets ? write(["["]) : write([" "]) 
+      end
       write(["#{wrapchar}#{class_style}"])
     end
     start_capture(tag)
@@ -339,7 +344,9 @@ class HTMLToTextileParser < SGMLParser
   def make_quicktag_end_pair(wrapchar)
     stop_capture_and_write
     write([wrapchar]) unless @skip_quicktag
-    write([" "]) unless in_nested_quicktag?
+    unless in_nested_quicktag?
+      @use_square_brackets ? write(["]"]) : write([" "]) 
+    end
   end
   
   def in_nested_quicktag?

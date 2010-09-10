@@ -89,8 +89,10 @@ describe HTMLToTextileParser, "when converting html to textile" do
         <strong>Please apply online at:<br /></strong><a href="http://www.something.co.uk/careers">www.something.co.uk/careers</a></p>
       
       <p>test <strong> 
-      <em>test emphasised<br />bold text</em> </strong>test</p>
-      
+      <em>test emphasised<br />bold text</em> </strong>test
+      An ordinal number - 1<sup>st</sup>
+      </p>
+
       <div class="feedback">
         Leave some feedback...<br/>
         <script src="http://feeds.feedburner.com/~s/jystewart/iLiN?i=http://jystewart.net/process/2007/11/converting-html-to-textile-with-ruby/" type="text/javascript" charset="utf-8"></script>
@@ -179,6 +181,10 @@ describe HTMLToTextileParser, "when converting html to textile" do
   
   it "should remove unsupported elements (e.g. script)" do
     @textile.should_not include('script')
+  end
+  
+  it "should use square bracket syntax for superscript and subscript quicktags" do
+    @textile.should include('An ordinal number- 1[^st^]')
   end
   
   it "should remove unsupported attributes (i.e. everything but class and id)" do
