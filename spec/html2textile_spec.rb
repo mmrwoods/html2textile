@@ -90,7 +90,7 @@ describe HTMLToTextileParser, "when converting html to textile" do
       
       <p>test <strong> 
       <em>test emphasised<br />bold text</em> </strong>test
-      An ordinal number - 1<sup>st</sup>
+      An ordinal number - 1<sup>st </sup>
       </p>
 
       <div class="feedback">
