@@ -1,4 +1,4 @@
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib') 
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'html2textile'
 #require 'redcloth'
 
@@ -43,6 +43,8 @@ describe HTMLToTextileParser, "when converting html to textile" do
         <li>test 1</li>
         <li>test 2<br>with a line break in the middle</li>
         <li>test 3</li>
+        <li> <br/>
+        </li>
       </ol>
       
       x&gt; y
@@ -123,6 +125,10 @@ describe HTMLToTextileParser, "when converting html to textile" do
     @textile.should match(/^p(\([^\)]+\))?\./)
   end
   
+  it "should remove empty list items" do
+    @textile.should include("# test 3\n\n")
+  end
+  
   it "should not explicitly markup paragraphs unnecessarily" do
     @textile.should_not include("p. test paragraph without id or class attributes")
   end
@@ -168,7 +174,7 @@ describe HTMLToTextileParser, "when converting html to textile" do
   end
   
   it "should respect trailing line break tags within other elements" do
-    @textile.should include("*Please apply online at:*\n \"www.something.co.uk/careers\":http://www.something.co.uk/careers")
+    @textile.should include("*Please apply online at:*\n\"www.something.co.uk/careers\":http://www.something.co.uk/careers")
   end
   
   it "should handle nested inline elements (even with spacing between the nested elements)" do

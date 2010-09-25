@@ -557,8 +557,9 @@ class HTMLToTextileParser < SGMLParser
     end
     # replace non-breaking spaces
     data.gsub!(/&(nbsp|#160);/,' ')
-    # remove empty blockquotes (other empty elements are easy enough to deal with)
-    data.gsub!(/<blockquote>\s*<br[^>]*>\s*<\/blockquote>/x,' ')
+    # remove empty blockquotes and list items (other empty elements are easy enough to deal with)
+    data.gsub!(/<blockquote>\s*(<br[^>]*>)?\s*<\/blockquote>/x,' ')
+    data.gsub!(/<li>\s*(<br[^>]*>)?\s*<\/li>/x,'')
     super(data)
   end
   
@@ -593,6 +594,7 @@ class HTMLToTextileParser < SGMLParser
       output.gsub!(/(#{Regexp.escape(t)})(\w+)([^#{Regexp.escape(t)}]+)(\s+)(#{Regexp.escape(t)}\]?)/,'\1\2\3\5\4') # fixes trailing whitespace before closing quicktags
     end
     output.squeeze!(' ')
+    output.gsub!(/^[ \t]/,'') # leading whitespace
     output.strip!
     return output
   end
