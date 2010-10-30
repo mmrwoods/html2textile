@@ -555,6 +555,16 @@ class HTMLToTextileParser < SGMLParser
     data.gsub!(/<blockquote>((\s*<p[^>]*>.*<\/p>\s*){1,})<\/blockquote>/xi) do |m|
       $1.strip.gsub(/<(\/?)p([^>]*)>/i,'<\1blockquote\2>')
     end
+    # clean up leading and trailing spaces within phrase modifier tags
+    quicktags_for_re = QUICKTAGS.keys.uniq.join('|')
+    leading_spaces_re = /(<(?:#{quicktags_for_re})(?:\s+[^>]*)?>)( +|<br\s*\/?>)/
+    tailing_spaces_re = /( +|<br\s*\/?>)(<\/(?:#{quicktags_for_re})(?:\s+[^>]*)?>)/
+    while data =~ leading_spaces_re
+      data.gsub!(leading_spaces_re,'\2\1')
+    end
+    while data =~ tailing_spaces_re
+      data.gsub!(tailing_spaces_re,'\2\1')
+    end
     # replace non-breaking spaces
     data.gsub!(/&(nbsp|#160);/,' ')
     # remove empty blockquotes and list items (other empty elements are easy enough to deal with)
@@ -586,15 +596,16 @@ class HTMLToTextileParser < SGMLParser
   
   def fix_textile_whitespace!(output)
     # fixes multiple blank lines, blockquote indicator followed by blank lines, and trailing whitespace after quicktags
-    # returns string
+    # modifies input string and also returns it
     output.gsub!(/(\n\s*){2,}/,"\n\n")
     output.gsub!(/bq. \n+(\w)/,'bq. \1')
     QUICKTAGS.values.uniq.each do |t|
       output.gsub!(/ #{Regexp.escape(t)}\s+#{Regexp.escape(t)} /,' ') # removes empty quicktags
-      output.gsub!(/(#{Regexp.escape(t)})(\w+)([^#{Regexp.escape(t)}]+)(\s+)(#{Regexp.escape(t)}\]?)/,'\1\2\3\5\4') # fixes trailing whitespace before closing quicktags
+      output.gsub!(/(\[?#{Regexp.escape(t)})(\w+)([^#{Regexp.escape(t)}]+)(\s+)(#{Regexp.escape(t)}\]?)/,'\1\2\3\5\4') # fixes trailing whitespace before closing quicktags
     end
     output.squeeze!(' ')
     output.gsub!(/^[ \t]/,'') # leading whitespace
+    output.gsub!(/[ \t]$/,'') # trailing whitespace
     output.strip!
     return output
   end
