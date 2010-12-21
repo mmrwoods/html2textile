@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Converter from HTML to Textile'
   s.description = 'Provides an SGML parser to convert HTML into the Textile format'
 
-  s.required_ruby_version     = '>= 1.8.7'
+  s.required_ruby_version     = '>= 1.8.6'
   s.required_rubygems_version = ">= 1.3.6"
 
   s.authors           = ['James Stewart', 'Mark Woods']
