@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'html2textile'
-  s.version     = "1.0.0.jgp"
+  s.version     = "1.1.0"
   s.summary     = 'Converter from HTML to Textile'
   s.description = 'Provides an SGML parser to convert HTML into the Textile format'
 
