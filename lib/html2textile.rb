@@ -356,9 +356,9 @@ class HTMLToTextileParser < SGMLParser
   
   def write(d)
     if self.data_stack.size < 2
-      self.result += d.to_a
+      self.result += Array(d)
     else
-      self.data_stack[-1] += d.to_a
+      self.data_stack[-1] += Array(d)
     end
   end
           
