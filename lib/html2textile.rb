@@ -356,9 +356,9 @@ class HTMLToTextileParser < SGMLParser
   
   def write(d)
     if self.data_stack.size < 2
-      self.result += d.to_a
+      self.result += Array(d)
     else
-      self.data_stack[-1] += d.to_a
+      self.data_stack[-1] += Array(d)
     end
   end
           
@@ -459,14 +459,14 @@ class HTMLToTextileParser < SGMLParser
     attrs = attrs_to_hash(attrs)
     self.a_href = attrs['href']
 
-    if self.a_href:
+    if self.a_href
       write(" \"")
       start_capture("a")
     end
   end
 
   def end_a
-    if self.a_href:
+    if self.a_href
       stop_capture_and_write
       write(["\":", self.a_href, " "])
       self.a_href = false
